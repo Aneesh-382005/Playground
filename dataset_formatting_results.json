@@ -1,0 +1,657 @@
+{
+  "generaleoley/manim-codegen": {
+    "total_samples": 1622,
+    "changed": 0,
+    "unchanged": 1622,
+    "errors": 0,
+    "changed_samples": []
+  },
+  "thanhkt/manim_code": {
+    "total_samples": 4400,
+    "changed": 128,
+    "unchanged": 4272,
+    "errors": 0,
+    "changed_samples": [
+      {
+        "index": 48,
+        "original_length": 4250,
+        "formatted_length": 4252
+      },
+      {
+        "index": 102,
+        "original_length": 354,
+        "formatted_length": 355
+      },
+      {
+        "index": 170,
+        "original_length": 749,
+        "formatted_length": 747
+      },
+      {
+        "index": 172,
+        "original_length": 9334,
+        "formatted_length": 9334
+      },
+      {
+        "index": 175,
+        "original_length": 9400,
+        "formatted_length": 9416
+      },
+      {
+        "index": 295,
+        "original_length": 1941,
+        "formatted_length": 1942
+      },
+      {
+        "index": 359,
+        "original_length": 934,
+        "formatted_length": 935
+      },
+      {
+        "index": 375,
+        "original_length": 2886,
+        "formatted_length": 2887
+      },
+      {
+        "index": 380,
+        "original_length": 112,
+        "formatted_length": 104
+      },
+      {
+        "index": 402,
+        "original_length": 938,
+        "formatted_length": 939
+      },
+      {
+        "index": 430,
+        "original_length": 1184,
+        "formatted_length": 1185
+      },
+      {
+        "index": 440,
+        "original_length": 2571,
+        "formatted_length": 2572
+      },
+      {
+        "index": 473,
+        "original_length": 2281,
+        "formatted_length": 2282
+      },
+      {
+        "index": 486,
+        "original_length": 3755,
+        "formatted_length": 3756
+      },
+      {
+        "index": 538,
+        "original_length": 1576,
+        "formatted_length": 1577
+      },
+      {
+        "index": 563,
+        "original_length": 898,
+        "formatted_length": 899
+      },
+      {
+        "index": 604,
+        "original_length": 477,
+        "formatted_length": 479
+      },
+      {
+        "index": 748,
+        "original_length": 1892,
+        "formatted_length": 1893
+      },
+      {
+        "index": 781,
+        "original_length": 2363,
+        "formatted_length": 2364
+      },
+      {
+        "index": 782,
+        "original_length": 321,
+        "formatted_length": 322
+      },
+      {
+        "index": 809,
+        "original_length": 450,
+        "formatted_length": 451
+      },
+      {
+        "index": 870,
+        "original_length": 2720,
+        "formatted_length": 2721
+      },
+      {
+        "index": 891,
+        "original_length": 1635,
+        "formatted_length": 1555
+      },
+      {
+        "index": 998,
+        "original_length": 4154,
+        "formatted_length": 4156
+      },
+      {
+        "index": 1003,
+        "original_length": 12755,
+        "formatted_length": 12738
+      },
+      {
+        "index": 1014,
+        "original_length": 898,
+        "formatted_length": 899
+      },
+      {
+        "index": 1016,
+        "original_length": 418,
+        "formatted_length": 419
+      },
+      {
+        "index": 1079,
+        "original_length": 26254,
+        "formatted_length": 26256
+      },
+      {
+        "index": 1106,
+        "original_length": 2609,
+        "formatted_length": 2543
+      },
+      {
+        "index": 1112,
+        "original_length": 1864,
+        "formatted_length": 1863
+      },
+      {
+        "index": 1122,
+        "original_length": 2232,
+        "formatted_length": 2233
+      },
+      {
+        "index": 1136,
+        "original_length": 907,
+        "formatted_length": 908
+      },
+      {
+        "index": 1140,
+        "original_length": 2352,
+        "formatted_length": 2354
+      },
+      {
+        "index": 1189,
+        "original_length": 845,
+        "formatted_length": 843
+      },
+      {
+        "index": 1271,
+        "original_length": 2400,
+        "formatted_length": 2401
+      },
+      {
+        "index": 1296,
+        "original_length": 2001,
+        "formatted_length": 2002
+      },
+      {
+        "index": 1341,
+        "original_length": 2603,
+        "formatted_length": 2604
+      },
+      {
+        "index": 1421,
+        "original_length": 924,
+        "formatted_length": 925
+      },
+      {
+        "index": 1424,
+        "original_length": 9863,
+        "formatted_length": 9924
+      },
+      {
+        "index": 1456,
+        "original_length": 1793,
+        "formatted_length": 1794
+      },
+      {
+        "index": 1499,
+        "original_length": 1028,
+        "formatted_length": 1029
+      },
+      {
+        "index": 1557,
+        "original_length": 1755,
+        "formatted_length": 1756
+      },
+      {
+        "index": 1625,
+        "original_length": 2007,
+        "formatted_length": 2007
+      },
+      {
+        "index": 1678,
+        "original_length": 3655,
+        "formatted_length": 3658
+      },
+      {
+        "index": 1694,
+        "original_length": 7764,
+        "formatted_length": 7765
+      },
+      {
+        "index": 1742,
+        "original_length": 1286,
+        "formatted_length": 1288
+      },
+      {
+        "index": 1769,
+        "original_length": 2327,
+        "formatted_length": 2306
+      },
+      {
+        "index": 1809,
+        "original_length": 2011,
+        "formatted_length": 2012
+      },
+      {
+        "index": 1830,
+        "original_length": 2446,
+        "formatted_length": 2447
+      },
+      {
+        "index": 1845,
+        "original_length": 1285,
+        "formatted_length": 1286
+      },
+      {
+        "index": 1864,
+        "original_length": 6829,
+        "formatted_length": 6830
+      },
+      {
+        "index": 1867,
+        "original_length": 7246,
+        "formatted_length": 7247
+      },
+      {
+        "index": 1890,
+        "original_length": 80,
+        "formatted_length": 73
+      },
+      {
+        "index": 1894,
+        "original_length": 1466,
+        "formatted_length": 1467
+      },
+      {
+        "index": 1968,
+        "original_length": 3951,
+        "formatted_length": 3952
+      },
+      {
+        "index": 1969,
+        "original_length": 1000,
+        "formatted_length": 1001
+      },
+      {
+        "index": 2078,
+        "original_length": 10531,
+        "formatted_length": 10540
+      },
+      {
+        "index": 2083,
+        "original_length": 194,
+        "formatted_length": 195
+      },
+      {
+        "index": 2092,
+        "original_length": 12060,
+        "formatted_length": 12057
+      },
+      {
+        "index": 2126,
+        "original_length": 74,
+        "formatted_length": 75
+      },
+      {
+        "index": 2200,
+        "original_length": 2918,
+        "formatted_length": 2919
+      },
+      {
+        "index": 2205,
+        "original_length": 1044,
+        "formatted_length": 1045
+      },
+      {
+        "index": 2222,
+        "original_length": 14240,
+        "formatted_length": 14286
+      },
+      {
+        "index": 2270,
+        "original_length": 1340,
+        "formatted_length": 1341
+      },
+      {
+        "index": 2279,
+        "original_length": 6272,
+        "formatted_length": 6273
+      },
+      {
+        "index": 2295,
+        "original_length": 2127,
+        "formatted_length": 2128
+      },
+      {
+        "index": 2337,
+        "original_length": 2466,
+        "formatted_length": 2256
+      },
+      {
+        "index": 2400,
+        "original_length": 4095,
+        "formatted_length": 4096
+      },
+      {
+        "index": 2488,
+        "original_length": 2238,
+        "formatted_length": 2240
+      },
+      {
+        "index": 2509,
+        "original_length": 6564,
+        "formatted_length": 6564
+      },
+      {
+        "index": 2557,
+        "original_length": 554,
+        "formatted_length": 555
+      },
+      {
+        "index": 2598,
+        "original_length": 6841,
+        "formatted_length": 6807
+      },
+      {
+        "index": 2710,
+        "original_length": 2566,
+        "formatted_length": 2567
+      },
+      {
+        "index": 2723,
+        "original_length": 1348,
+        "formatted_length": 1329
+      },
+      {
+        "index": 2725,
+        "original_length": 2277,
+        "formatted_length": 2278
+      },
+      {
+        "index": 2741,
+        "original_length": 2297,
+        "formatted_length": 2298
+      },
+      {
+        "index": 2769,
+        "original_length": 20458,
+        "formatted_length": 20466
+      },
+      {
+        "index": 2799,
+        "original_length": 507,
+        "formatted_length": 512
+      },
+      {
+        "index": 2800,
+        "original_length": 4634,
+        "formatted_length": 4636
+      },
+      {
+        "index": 2801,
+        "original_length": 1061,
+        "formatted_length": 1062
+      },
+      {
+        "index": 2806,
+        "original_length": 198,
+        "formatted_length": 199
+      },
+      {
+        "index": 2855,
+        "original_length": 2391,
+        "formatted_length": 2392
+      },
+      {
+        "index": 2863,
+        "original_length": 16711,
+        "formatted_length": 16442
+      },
+      {
+        "index": 2866,
+        "original_length": 2776,
+        "formatted_length": 2777
+      },
+      {
+        "index": 2870,
+        "original_length": 14585,
+        "formatted_length": 14368
+      },
+      {
+        "index": 2892,
+        "original_length": 1361,
+        "formatted_length": 1379
+      },
+      {
+        "index": 2980,
+        "original_length": 1516,
+        "formatted_length": 1517
+      },
+      {
+        "index": 3058,
+        "original_length": 20209,
+        "formatted_length": 20207
+      },
+      {
+        "index": 3158,
+        "original_length": 454,
+        "formatted_length": 455
+      },
+      {
+        "index": 3160,
+        "original_length": 3357,
+        "formatted_length": 3392
+      },
+      {
+        "index": 3172,
+        "original_length": 4063,
+        "formatted_length": 4065
+      },
+      {
+        "index": 3212,
+        "original_length": 597,
+        "formatted_length": 598
+      },
+      {
+        "index": 3219,
+        "original_length": 2407,
+        "formatted_length": 2408
+      },
+      {
+        "index": 3240,
+        "original_length": 2338,
+        "formatted_length": 2179
+      },
+      {
+        "index": 3242,
+        "original_length": 1193,
+        "formatted_length": 1194
+      },
+      {
+        "index": 3259,
+        "original_length": 4443,
+        "formatted_length": 4327
+      },
+      {
+        "index": 3262,
+        "original_length": 758,
+        "formatted_length": 760
+      },
+      {
+        "index": 3318,
+        "original_length": 2220,
+        "formatted_length": 2221
+      },
+      {
+        "index": 3328,
+        "original_length": 1753,
+        "formatted_length": 1754
+      },
+      {
+        "index": 3427,
+        "original_length": 2517,
+        "formatted_length": 2557
+      },
+      {
+        "index": 3467,
+        "original_length": 2123,
+        "formatted_length": 2125
+      },
+      {
+        "index": 3482,
+        "original_length": 1011,
+        "formatted_length": 1012
+      },
+      {
+        "index": 3490,
+        "original_length": 2362,
+        "formatted_length": 2363
+      },
+      {
+        "index": 3532,
+        "original_length": 2131,
+        "formatted_length": 2132
+      },
+      {
+        "index": 3534,
+        "original_length": 8800,
+        "formatted_length": 8801
+      },
+      {
+        "index": 3561,
+        "original_length": 1765,
+        "formatted_length": 1766
+      },
+      {
+        "index": 3581,
+        "original_length": 1927,
+        "formatted_length": 1927
+      },
+      {
+        "index": 3604,
+        "original_length": 697,
+        "formatted_length": 698
+      },
+      {
+        "index": 3652,
+        "original_length": 1551,
+        "formatted_length": 1552
+      },
+      {
+        "index": 3662,
+        "original_length": 525,
+        "formatted_length": 501
+      },
+      {
+        "index": 3667,
+        "original_length": 12563,
+        "formatted_length": 12584
+      },
+      {
+        "index": 3669,
+        "original_length": 898,
+        "formatted_length": 899
+      },
+      {
+        "index": 3699,
+        "original_length": 10814,
+        "formatted_length": 10814
+      },
+      {
+        "index": 3786,
+        "original_length": 3443,
+        "formatted_length": 3444
+      },
+      {
+        "index": 3821,
+        "original_length": 1993,
+        "formatted_length": 1994
+      },
+      {
+        "index": 3872,
+        "original_length": 14669,
+        "formatted_length": 14339
+      },
+      {
+        "index": 3921,
+        "original_length": 5707,
+        "formatted_length": 5708
+      },
+      {
+        "index": 3947,
+        "original_length": 3179,
+        "formatted_length": 3180
+      },
+      {
+        "index": 4005,
+        "original_length": 659,
+        "formatted_length": 660
+      },
+      {
+        "index": 4018,
+        "original_length": 2101,
+        "formatted_length": 2102
+      },
+      {
+        "index": 4026,
+        "original_length": 251,
+        "formatted_length": 252
+      },
+      {
+        "index": 4047,
+        "original_length": 658,
+        "formatted_length": 656
+      },
+      {
+        "index": 4068,
+        "original_length": 1243,
+        "formatted_length": 1244
+      },
+      {
+        "index": 4083,
+        "original_length": 2109,
+        "formatted_length": 2110
+      },
+      {
+        "index": 4226,
+        "original_length": 1185,
+        "formatted_length": 1186
+      },
+      {
+        "index": 4248,
+        "original_length": 353,
+        "formatted_length": 354
+      },
+      {
+        "index": 4281,
+        "original_length": 14650,
+        "formatted_length": 14345
+      },
+      {
+        "index": 4298,
+        "original_length": 1797,
+        "formatted_length": 1796
+      }
+    ]
+  }
+}

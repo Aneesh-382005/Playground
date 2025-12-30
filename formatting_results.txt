@@ -1,0 +1,83 @@
+--- BEFORE FORMATTING ---
+\n from manim import *
+
+class AreaUnderCurveExample(Scene):
+    def construct(self):
+        # Displaying the problem
+        problem = MathTex(r"\int_1^3 x^2 \,dx")
+        self.play(Write(problem))
+        self.wait(1)
+
+        # Explanation for setting up the integral
+        explanation1 = Text("Find the area under x^2 from 1 to 3", font_size=24).to_edge(UP)
+        self.play(Write(explanation1))
+        self.wait(2)
+
+        # Integrating the function
+        integration_step = MathTex(r"= \left[\frac{1}{3} x^3\right]_1^3")
+        self.play(ReplacementTransform(problem.copy(), integration_step))
+        self.wait(1)
+
+        # Explanation for solving the integral
+        explanation2 = Text("Plug in the upper and lower limits", font_size=24).to_edge(UP)
+        self.play(Transform(explanation1, explanation2))
+        self.wait(2)
+
+        # Showing the evaluation of the bounds
+        evaluation_step = MathTex(r"= \frac{1}{3} (3^3) - \frac{1}{3} (1^3)")
+        self.play(ReplacementTransform(integration_step, evaluation_step))
+        self.wait(1)
+
+        # Convert into numbers
+        final_solution = MathTex(r"= \frac{1}{3} (27) - \frac{1}{3} (1)", r"= 9 - \frac{1}{3}", r"= \frac{26}{3}")
+        self.play(ReplacementTransform(evaluation_step, final_solution))
+        self.wait(1)
+
+        # Clear the scene and present the final answer
+        self.clear()
+        self.wait(1)
+        self.play(Write(final_solution))
+        self.wait(1)
+-------------------------
+
+--- AFTER FORMATTING ---
+\n from manim import *
+
+class AreaUnderCurveExample(Scene):
+    def construct(self):
+        # Displaying the problem
+        problem = MathTex(r"\int_1^3 x^2 \,dx")
+        self.play(Write(problem))
+        self.wait(1)
+
+        # Explanation for setting up the integral
+        explanation1 = Text("Find the area under x^2 from 1 to 3", font_size=24).to_edge(UP)
+        self.play(Write(explanation1))
+        self.wait(2)
+
+        # Integrating the function
+        integration_step = MathTex(r"= \left[\frac{1}{3} x^3\right]_1^3")
+        self.play(ReplacementTransform(problem.copy(), integration_step))
+        self.wait(1)
+
+        # Explanation for solving the integral
+        explanation2 = Text("Plug in the upper and lower limits", font_size=24).to_edge(UP)
+        self.play(Transform(explanation1, explanation2))
+        self.wait(2)
+
+        # Showing the evaluation of the bounds
+        evaluation_step = MathTex(r"= \frac{1}{3} (3^3) - \frac{1}{3} (1^3)")
+        self.play(ReplacementTransform(integration_step, evaluation_step))
+        self.wait(1)
+
+        # Convert into numbers
+        final_solution = MathTex(r"= \frac{1}{3} (27) - \frac{1}{3} (1)", r"= 9 - \frac{1}{3}", r"= \frac{26}{3}")
+        self.play(ReplacementTransform(evaluation_step, final_solution))
+        self.wait(1)
+
+        # Clear the scene and present the final answer
+        self.clear()
+        self.wait(1)
+        self.play(Write(final_solution))
+        self.wait(1)
+------------------------
