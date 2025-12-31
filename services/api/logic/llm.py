@@ -1,6 +1,7 @@
 import os
 from groq import Groq
-
+from dotenv import load_dotenv
+load_dotenv()
 MANIM_PROMPT_TEMPLATE = """
 You are a Manim animation expert. Your sole task is to generate a complete, runnable Manim script in a single Python code block.
 The script must define a single class that inherits from 'manim.Scene'.
