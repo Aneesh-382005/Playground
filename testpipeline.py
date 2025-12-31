@@ -1,13 +1,13 @@
 import time
 from dotenv import load_dotenv
 
-from modules.llm import createGroqClient, generateManimCode
-from modules.sanitizer import sanitizeCode
-from modules.renderer import renderCode
+from services.api.logic.llm import createGroqClient, generateManimCode
+from services.api.logic.sanitizer import sanitizeCode
+from services.api.logic.renderer import renderCode
 
 
 def main() -> None:
-    userPrompt = "Draw a circle and then have it transform into a square."
+    userPrompt = "Explain Neural Networks"
     print("-" * 50)
     print(f"Starting Playground Pipeline for prompt: '{userPrompt}'")
     print("-" * 50)
