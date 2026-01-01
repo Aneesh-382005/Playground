@@ -2,6 +2,7 @@ from fastapi import FastAPI, BackgroundTasks, HTTPException
 from pydantic import BaseModel
 import uuid
 import time
+from fastapi.staticfiles import StaticFiles
 
 from services.api.logic.llm import createGroqClient, generateManimCode
 from services.api.logic.sanitizer import sanitizeCode
@@ -11,6 +12,7 @@ app = FastAPI(
     title = "Playground API", 
     description = "An API to convert text prompts into Manim animations.",
 )
+app.mount("/media", StaticFiles(directory="media"), name="media")
 
 tasks = {}
 

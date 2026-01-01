@@ -13,18 +13,26 @@ def extractPythonCode(rawContent: str) -> str:
 
 def ensureManimScene(rawCode: str) -> str:
     hasScene = re.search(r"class\s+\w+\(\s*(?:Scene|manim\.Scene)\s*\):", rawCode)
-    hasImport = re.search(r"from\s+manim\s+import|import\s+manim", rawCode)
+    importsModule = re.search(r"\bimport\s+manim\b", rawCode)
+    importsFrom = re.search(r"\bfrom\s+manim\s+import\b", rawCode)
+    usesManimPrefix = "manim." in rawCode
 
-    code = rawCode
+    needModuleImport = usesManimPrefix and not importsModule
+    needStarImport = not (importsModule or importsFrom)
+
+    codeBody = rawCode
     if not hasScene:
-        header = "from manim import *\n\n" if not hasImport else ""
         lines = rawCode.splitlines()
         indented = "\n".join(("        " + ln) if ln.strip() else "" for ln in lines)
-        code = f"{header}class GeneratedScene(Scene):\n    def construct(self):\n{indented}\n"
-    elif not hasImport:
-        code = "from manim import *\n" + rawCode
+        codeBody = f"class GeneratedScene(Scene):\n    def construct(self):\n{indented}\n"
 
-    return code
+    prelude: list[str] = []
+    if needModuleImport:
+        prelude.append("import manim")
+    if needStarImport:
+        prelude.append("from manim import *")
+
+    return ("\n".join(prelude) + "\n\n" if prelude else "") + codeBody
 
 
 def sanitizeCode(rawContent: str) -> str:

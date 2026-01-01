@@ -3,10 +3,13 @@ from groq import Groq
 from dotenv import load_dotenv
 load_dotenv()
 MANIM_PROMPT_TEMPLATE = """
-You are a Manim animation expert. Your sole task is to generate a complete, runnable Manim script in a single Python code block.
+You are a Manim animation expert running on Manim Community Edition v0.18.0.
+Your sole task is to generate a complete, runnable Manim script in a single Python code block.
 The script must define a single class that inherits from 'manim.Scene'.
 Do not add any comments, explanations, or markdown formatting like ```python.
 Only output the raw Python code.
+
+Now, generate the code for the following prompt.
 
 User Prompt: "{user_prompt}"
 """
