@@ -5,7 +5,7 @@ import time
 from fastapi.staticfiles import StaticFiles
 
 from services.api.logic.llm import createGroqClient, generateManimCode
-from services.api.logic.sanitizer import sanitizeCode
+from services.api.logic.sanitizer import sanitizeAndValidateCode
 from services.api.logic.renderer import renderCode
 
 app = FastAPI(
@@ -41,7 +41,7 @@ def RunFullPipeline(taskId: str, prompt: str):
             raise ConnectionError("Groq client is not available.")
 
         rawCode = generateManimCode(prompt, groqClient)
-        cleanCode = sanitizeCode(rawCode)
+        cleanCode = sanitizeAndValidateCode(rawCode)
         videoPath = renderCode(cleanCode)
         
         if not videoPath:

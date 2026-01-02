@@ -1,15 +1,17 @@
 import re
 import black
 
+class CodeValidationError(Exception):
+    pass
+
 def extractPythonCode(rawContent: str) -> str:
     cleaned = re.sub(r"<think>.*?</think>", "", rawContent, flags=re.DOTALL | re.IGNORECASE)
     fenced = re.findall(r"```(?:python)?(.*?)```", cleaned, flags=re.DOTALL | re.IGNORECASE)
     candidate = fenced[-1] if fenced else cleaned
     candidate = candidate.strip()
     if not candidate:
-        raise ValueError("LLM response did not contain usable code")
+        raise CodeValidationError("LLM response did not contain any usable code.")
     return candidate
-
 
 def ensureManimScene(rawCode: str) -> str:
     hasScene = re.search(r"class\s+\w+\(\s*(?:Scene|manim\.Scene)\s*\):", rawCode)
@@ -34,11 +36,25 @@ def ensureManimScene(rawCode: str) -> str:
 
     return ("\n".join(prelude) + "\n\n" if prelude else "") + codeBody
 
-
-def sanitizeCode(rawContent: str) -> str:
-    rawCode = extractPythonCode(rawContent)
-    wrappedCode = ensureManimScene(rawCode)
+def lintCode(codeString: str):
     try:
-        return black.format_str(wrappedCode, mode=black.Mode())
-    except Exception:
+        compile(codeString, "<string>", "exec")
+    except SyntaxError as e:
+        raise CodeValidationError(f"Code failed syntax check: {e.msg} on line {e.lineno}")
+
+def sanitizeAndValidateCode(rawLlmContent: str) -> str:
+    try:
+        rawCode = extractPythonCode(rawLlmContent)
+        wrappedCode = ensureManimScene(rawCode)
+        
+        formattedCode = black.format_str(wrappedCode, mode=black.Mode())
+        lintCode(formattedCode)
+        return formattedCode
+
+    except black.NothingChanged:
+        lintCode(wrappedCode)
         return wrappedCode
+    
+    except (CodeValidationError, Exception) as e:
+        print(f"Validation failed: {e}")
+        raise e
