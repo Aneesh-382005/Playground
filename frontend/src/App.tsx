@@ -101,7 +101,7 @@ function App() {
           Playground: Text-to-Manim
         </Typography>
         <Typography variant="h6" color="textSecondary" gutterBottom>
-          Describe an animation, and let AI bring it to life.
+          Describe an animation, and bring it to life.
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 4 }}>
