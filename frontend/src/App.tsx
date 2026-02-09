@@ -9,9 +9,18 @@ import {
   Alert,
   CssBaseline,
 } from '@mui/material';
+import './App.css';
 
 // The address of your FastAPI backend
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/$/, '');
+
+const samplePrompts = [
+  'Visualize Pythagoras theorem using squares on a triangle.',
+  'Animate binary search on a sorted array with pointers.',
+  'Show a queue enqueue/dequeue process with labels.',
+];
+
+const MODEL_NAME = 'Qwen3-32B';
 
 function App() {
   const [prompt, setPrompt] = useState<string>('');
@@ -22,6 +31,7 @@ function App() {
   const [elapsedTime, setElapsedTime] = useState<number>(0);
 
   const isProcessing = status === 'submitting' || status === 'PENDING' || status === 'PROCESSING';
+  const statusLabel = status === 'submitting' ? 'Submitting' : status;
 
   // Polling logic to check the status of a job
   useEffect(() => {
@@ -94,71 +104,145 @@ function App() {
 
   return (
     <>
-      <CssBaseline /> {/* Ensures a consistent baseline style */}
-      <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', paddingTop: '4rem' }}>
-        <Container maxWidth="md" sx={{ textAlign: 'center' }}>
-        <Typography variant="h2" component="h1" gutterBottom>
-          Playground: Text-to-Manim
-        </Typography>
-        <Typography variant="h6" color="textSecondary" gutterBottom>
-          Describe an animation, and bring it to life.
-        </Typography>
+      <CssBaseline />
+      <div className="page">
+        <div className="bg-orb orb-1" />
+        <div className="bg-orb orb-2" />
+        <div className="bg-grid" />
+        <Container maxWidth="lg" className="shell">
+          <header className="topbar">
+            <div className="brand">
+              <span className="brand-dot" />
+              <span>Playground</span>
+            </div>
+            <div className="pill">Prototype</div>
+          </header>
 
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 4 }}>
-          <TextField
-            fullWidth
-            multiline
-            rows={4}
-            variant="outlined"
-            label="Animation Prompt"
-            placeholder="A blue circle transforming into a red square, with both fading in and out."
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            disabled={isProcessing}
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            size="large"
-            disabled={isProcessing}
-            sx={{ mt: 2 }}
-          >
-            {isProcessing ? <CircularProgress size={24} color="inherit" /> : 'Generate Animation'}
-          </Button>
-        </Box>
+          <div className="layout">
+            <section className="hero">
+              <Typography variant="h2" component="h1" className="headline" gutterBottom>
+                Text-to-Manim, in minutes.
+              </Typography>
+              <Typography variant="h6" className="subhead" gutterBottom>
+                Turn algorithms and math concepts into crisp animations. Describe what you want and
+                get a rendered video back.
+              </Typography>
+              <div className="stat-row">
+                <div className="stat-card">
+                  <span className="stat-label">LLM</span>
+                  <span className="stat-value">{MODEL_NAME}</span>
+                </div>
+                <div className="stat-card">
+                  <span className="stat-label">Renderer</span>
+                  <span className="stat-value">Manim CE</span>
+                </div>
+                <div className="stat-card">
+                  <span className="stat-label">API</span>
+                  <span className="stat-value">FastAPI</span>
+                </div>
+              </div>
+            </section>
 
-        {isProcessing && (
-           <Box sx={{ mt: 4 }}>
-             <Typography variant="h6">Status: {status}</Typography>
-             <Typography color="textSecondary">Time Elapsed: {elapsedTime}s</Typography>
-             <CircularProgress sx={{ mt: 2 }} />
-             <Typography color="textSecondary" sx={{mt: 1}}>Your video is being generated. Please wait...</Typography>
-           </Box>
-        )}
+            <section className="panel">
+              <Typography variant="h6" className="panel-title">
+                Describe your animation
+              </Typography>
+              <Typography className="panel-subtitle">
+                Keep it clear and visual. The model handles the rest.
+              </Typography>
 
-        {error && (
-          <Alert severity="error" sx={{ mt: 4, textAlign: 'left' }}>
-            <Typography gutterBottom>An Error Occurred</Typography>
-            <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>{error}</pre>
-          </Alert>
-        )}
+              <Box component="form" onSubmit={handleSubmit} className="panel-form">
+                <TextField
+                  fullWidth
+                  multiline
+                  rows={5}
+                  variant="outlined"
+                  label="Animation Prompt"
+                  placeholder="A blue circle transforms into a red square, then fades out."
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  disabled={isProcessing}
+                />
+                <div className="actions">
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    size="large"
+                    disabled={isProcessing}
+                    className="primary"
+                  >
+                    {isProcessing ? <CircularProgress size={22} color="inherit" /> : 'Generate Animation'}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="text"
+                    disabled={isProcessing || !prompt}
+                    onClick={() => setPrompt('')}
+                    className="ghost"
+                  >
+                    Clear
+                  </Button>
+                </div>
+              </Box>
 
-        {videoUrl && (
-          <Box sx={{ mt: 4 }}>
-            <Typography variant="h5" gutterBottom>Animation Ready!</Typography>
-            <video
-              controls
-              style={{ maxWidth: '100%', borderRadius: '8px', marginTop: '1rem' }}
-              src={videoUrl}
-              autoPlay
-              loop
-            >
-              Your browser does not support the video tag.
-            </video>
-          </Box>
-        )}
+              <div className="sample-row">
+                <Typography className="sample-label">Try one:</Typography>
+                <div className="sample-buttons">
+                  {samplePrompts.map((text) => (
+                    <button
+                      key={text}
+                      type="button"
+                      className="sample-button"
+                      onClick={() => setPrompt(text)}
+                      disabled={isProcessing}
+                    >
+                      {text}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {isProcessing && (
+                <Box className="status-card">
+                  <div className="status-header">
+                    <Typography variant="h6">Status: {statusLabel}</Typography>
+                    <Typography className="status-time">{elapsedTime}s</Typography>
+                  </div>
+                  <div className="status-body">
+                    <CircularProgress />
+                    <Typography className="status-text">
+                      Rendering your animation. This can take a moment.
+                    </Typography>
+                  </div>
+                </Box>
+              )}
+
+              {error && (
+                <Alert severity="error" className="error-card">
+                  <Typography gutterBottom>An error occurred</Typography>
+                  <pre className="error-body">{error}</pre>
+                </Alert>
+              )}
+
+              {videoUrl && (
+                <Box className="video-card">
+                  <Typography variant="h6" gutterBottom>
+                    Animation Ready
+                  </Typography>
+                  <video controls src={videoUrl} autoPlay loop />
+                </Box>
+              )}
+            </section>
+          </div>
+
+          <footer className="footer">
+            Built as a side-project prototype • Model: {MODEL_NAME} • Provider: Groq •{' '}
+            <a href="https://github.com/Aneesh-382005/Playground" target="_blank" rel="noreferrer">
+              GitHub
+            </a>
+          </footer>
         </Container>
-      </Box>
+      </div>
     </>
   );
 }
