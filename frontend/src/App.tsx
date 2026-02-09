@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 
 // The address of your FastAPI backend
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/$/, '');
 
 function App() {
   const [prompt, setPrompt] = useState<string>('');

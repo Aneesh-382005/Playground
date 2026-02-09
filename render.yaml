@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: playground-api
+    env: docker
+    rootDir: .
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
+    healthCheckPath: /
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
