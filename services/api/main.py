@@ -6,7 +6,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 from services.api.logic.llm import createGroqClient, generateManimCode
-from services.api.logic.sanitizer import sanitizeAndValidateCode
 from services.api.logic.renderer import renderCode
 
 app = FastAPI(
@@ -50,8 +49,8 @@ def RunFullPipeline(taskId: str, prompt: str):
         if not groqClient:
             raise ConnectionError("Groq client is not available.")
 
-        rawCode = generateManimCode(prompt, groqClient)
-        cleanCode = sanitizeAndValidateCode(rawCode)
+        # `generateManimCode` now returns a sanitized, validated Manim source
+        cleanCode = generateManimCode(prompt, groqClient)
         videoPath = renderCode(cleanCode)
         
         if not videoPath:
