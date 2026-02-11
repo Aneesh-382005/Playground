@@ -137,7 +137,7 @@ function App() {
                   <span className="stat-value">Manim CE</span>
                 </div>
                 <div className="stat-card">
-                  <span className="stat-label">API</span>
+                  <span className="stat-label">Backend</span>
                   <span className="stat-value">FastAPI</span>
                 </div>
               </div>
