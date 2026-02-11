@@ -18,6 +18,7 @@ RUN apt-get update \
         texlive-latex-extra \
         texlive-fonts-recommended \
         texlive-fonts-extra \
+        dvisvgm \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
