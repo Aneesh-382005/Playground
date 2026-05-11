@@ -236,10 +236,26 @@ function App() {
           </div>
 
           <footer className="footer">
-            Built as a side-project prototype • Model: {MODEL_NAME} • Provider: Groq •{' '}
-            <a href="https://github.com/Aneesh-382005/Playground" target="_blank" rel="noreferrer">
-              GitHub
-            </a>
+            <div>
+              Built as a side-project prototype • Model: {MODEL_NAME} • Provider: Groq •{' '}
+              <a href="https://github.com/Aneesh-382005/Playground" target="_blank" rel="noreferrer">
+                GitHub
+              </a>
+            </div>
+            <div className="issue-cta">
+              <span className="issue-text">Found an Issue?</span>
+              <a
+                className="issue-link"
+                href="https://github.com/Aneesh-382005/Playground/issues"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Raise it here
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style={{marginLeft:4,verticalAlign:'middle'}} xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 13L13 7M13 7H7M13 7V13" stroke="#ff7a59" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </a>
+            </div>
           </footer>
         </Container>
       </div>
