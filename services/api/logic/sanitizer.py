@@ -6,9 +6,32 @@ class CodeValidationError(Exception):
 
 def extractPythonCode(rawContent: str) -> str:
     cleaned = re.sub(r"<think>.*?</think>", "", rawContent, flags=re.DOTALL | re.IGNORECASE)
+
+    # 1) Preferred: explicit markers. Ask model to return the full file BETWEEN these markers.
+    marker = re.search(r"###\s*CODE_START\s*###(.*?)###\s*CODE_END\s*###", cleaned, flags=re.DOTALL | re.IGNORECASE)
+    if marker:
+        candidate = marker.group(1).strip()
+        if not candidate:
+            raise CodeValidationError("LLM response contained code markers but no code between them.")
+        return candidate
+
+    # 2) Next, look for fenced code blocks (prefer the longest block)
     fenced = re.findall(r"```(?:python)?(.*?)```", cleaned, flags=re.DOTALL | re.IGNORECASE)
-    candidate = fenced[-1] if fenced else cleaned
-    candidate = candidate.strip()
+    if fenced:
+        candidates = [f.strip() for f in fenced if f.strip()]
+        if candidates:
+            candidate = max(candidates, key=len)
+            return candidate
+
+    # 3) Try to find a class inheriting from Scene and return from there to the end
+    class_match = re.search(r"(class\s+\w+\s*\(\s*(?:Scene|manim\.Scene)\s*\):[\s\S]*)", cleaned)
+    if class_match:
+        candidate = class_match.group(1).strip()
+        if candidate:
+            return candidate
+
+    # 4) Fallback: use the whole cleaned response
+    candidate = cleaned.strip()
     if not candidate:
         raise CodeValidationError("LLM response did not contain any usable code.")
     return candidate

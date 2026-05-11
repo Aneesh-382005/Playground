@@ -39,6 +39,14 @@ Formatting:
 - Keep the overall file under ~200 lines.
 
 Now generate a runnable Manim scene that implements the user request below.
+IMPORTANT: Wrap the COMPLETE Python source file between these exact markers
+so it can be reliably extracted by the pipeline:
+
+###CODE_START###
+<your python file here>
+###CODE_END###
+
+Return NOTHING outside these markers.
 
 User Prompt: "{user_prompt}"
 """
@@ -73,12 +81,16 @@ def generateManimCode(prompt: str, groqClient: Groq) -> str:
         return validated
     except Exception as first_exc:
         # Attempt a single automated retry: ask the model to return only corrected code
+        # Ask for a focused retry. Include the validation error and request the
+        # corrected file strictly between the ###CODE_START### / ###CODE_END### markers.
         retry_prompt = (
             full_prompt
             + "\n\nThe previous response could not be parsed or validated."
-            + f"\nError: {str(first_exc)}\n"
-            + "Please return ONLY a corrected, runnable Manim Python source file (no markdown or explanation)."
-            + " Return the complete file as raw Python code."
+            + f"\nValidation error: {str(first_exc)}\n"
+            + "Please return ONLY the corrected, runnable Manim Python source file."
+            + " Wrap the entire file between the markers exactly as shown:"
+            + "\n###CODE_START###\n<python file>\n###CODE_END###\n"
+            + "Do NOT include any surrounding prose or markdown."
             + "\nPrevious response:\n" + cleaned
         )
 
