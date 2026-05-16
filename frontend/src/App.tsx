@@ -118,6 +118,12 @@ function App() {
             <div className="pill">Prototype</div>
           </header>
 
+          <Box mt={2} mb={2}>
+            <Alert severity="info">
+              Desktop app coming soon! - a native desktop client is on the way.
+            </Alert>
+          </Box>
+
           <div className="layout">
             <section className="hero">
               <Typography variant="h2" component="h1" className="headline" gutterBottom>
