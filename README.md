@@ -20,9 +20,10 @@ cd ..
 python -m venv .venv
 source .venv/bin/activate  # or .venv\Scripts\activate on Windows
 pip install -r requirements.txt
-# Set your Groq API key (recommended: use a .env file or environment manager):
+# Groq is the default provider. Add NVIDIA_API_KEY too if you want to try Gemma.
 # Create a .env file in the project root with:
-#   GROQ_API_KEY=sk-...
+#   GROQ_API_KEY=...
+#   NVIDIA_API_KEY=...
 uvicorn services.api.main:app --reload
 ```
 
@@ -42,8 +43,9 @@ npm run dev
 1. Push your repo to GitHub.
 2. Go to [render.com](https://render.com), create a new Web Service, connect your repo.
 3. Render will auto-detect `render.yaml` and build with Docker.
-4. Set the `GROQ_API_KEY` environment variable in Render dashboard.
-5. Deploy. Copy the backend URL (e.g., `https://playground-xxxx.onrender.com`).
+4. Set `GROQ_API_KEY` in the Render dashboard.
+5. Optionally set `NVIDIA_API_KEY` if you want to use the NVIDIA provider.
+6. Deploy. Copy the backend URL (e.g., `https://playground-xxxx.onrender.com`).
 
 ## Deploy to Vercel (Frontend)
 1. Import your repo in [vercel.com](https://vercel.com/new).
@@ -69,5 +71,5 @@ npm run dev
 ---
 
 ## Credits
-- Built with FastAPI, Manim, React, Vite, Groq (provider), Qwen3-32B (model).
+- Built with FastAPI, Manim, React, Vite, Groq and NVIDIA providers, Qwen3-32B and Gemma 2 2B IT models.
 - See [frontend/README.md](frontend/README.md) for React/Vite details.

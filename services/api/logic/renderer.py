@@ -5,7 +5,20 @@ import tempfile
 from typing import Optional
 
 
+def _preflightManimCode(cleanCode: str) -> None:
+    if re.search(r"\b(?:self|Scene)\.get_mobject\s*\(", cleanCode):
+        raise RuntimeError("Manim preflight failed: scene lookup helpers like get_mobject are not supported. Store mobjects in local variables and reuse them directly.")
+
+    if re.search(r"Triangle\s*\([^\)]*\bside_length\s*=", cleanCode):
+        raise RuntimeError("Manim preflight failed: Triangle does not accept side_length. Create Triangle() and scale it afterward if needed.")
+
+    if re.search(r"self\.play\s*\(\s*[^\)]*\bget_mobject\s*\(", cleanCode):
+        raise RuntimeError("Manim preflight failed: self.play cannot use scene lookup helpers. Store the mobject in a variable first.")
+
+
 def renderCode(cleanCode: str) -> Optional[str]:
+    _preflightManimCode(cleanCode)
+
     match = re.search(r"class\s+(\w+)\(\s*(?:Scene|manim\.Scene)\s*\):", cleanCode)
     if not match:
         raise RuntimeError("Could not find a class inheriting from 'Scene' in the code")

@@ -1,11 +1,12 @@
 from fastapi import FastAPI, BackgroundTasks, HTTPException
 from pydantic import BaseModel
+from typing import Literal
 import uuid
 import time
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
-from services.api.logic.llm import createGroqClient, generateManimCode
+from services.api.logic.llm import createGroqClient, generateManimCode, repairManimCode
 from services.api.logic.renderer import renderCode
 
 app = FastAPI(
@@ -41,17 +42,22 @@ except Exception as exc:
     print(f"CRITICAL ERROR: Failed to create Groq client on startup: {exc}")
     groqClient = None
 
-def RunFullPipeline(taskId: str, prompt: str):
+def RunFullPipeline(taskId: str, prompt: str, provider: str = "groq"):
     print(f"Background task {taskId} started.")
     tasks[taskId] = {"status": "PROCESSING"}
     
     try:
-        if not groqClient:
+        if provider == "groq" and not groqClient:
             raise ConnectionError("Groq client is not available.")
 
         # `generateManimCode` now returns a sanitized, validated Manim source
-        cleanCode = generateManimCode(prompt, groqClient)
-        videoPath = renderCode(cleanCode)
+        cleanCode = generateManimCode(prompt, groqClient, provider)
+
+        try:
+            videoPath = renderCode(cleanCode)
+        except Exception as render_exc:
+            fixedCode = repairManimCode(prompt, cleanCode, str(render_exc), groqClient, provider)
+            videoPath = renderCode(fixedCode)
         
         if not videoPath:
             raise ValueError("Rendering resulted in no video path.")
@@ -65,6 +71,7 @@ def RunFullPipeline(taskId: str, prompt: str):
 
 class RenderRequest(BaseModel):
     prompt: str
+    provider: Literal["groq", "nvidia"] = "groq"
 
 class RenderResponse(BaseModel):
     taskID: str
@@ -79,7 +86,7 @@ def submitRenderJob(request: RenderRequest, background_tasks: BackgroundTasks):
     taskID = str(uuid.uuid4())
     tasks[taskID] = {"status": "PENDING"}
 
-    background_tasks.add_task(RunFullPipeline, taskID, request.prompt)
+    background_tasks.add_task(RunFullPipeline, taskID, request.prompt, request.provider)
     return RenderResponse(taskID=taskID)
 
 @app.get("/status/{task_id}", response_model=StatusResponse)

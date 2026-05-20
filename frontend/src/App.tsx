@@ -20,15 +20,23 @@ const samplePrompts = [
   'Show a queue enqueue/dequeue process with labels.',
 ];
 
-const MODEL_NAME = 'Qwen3-32B';
+const PROVIDER_OPTIONS = [
+  { id: 'groq', label: 'Groq', model: 'qwen/qwen3-32b' },
+  { id: 'nvidia', label: 'NVIDIA', model: 'google/gemma-2-2b-it' },
+] as const;
+
+type ProviderId = (typeof PROVIDER_OPTIONS)[number]['id'];
 
 function App() {
   const [prompt, setPrompt] = useState<string>('');
+  const [provider, setProvider] = useState<ProviderId>('groq');
   const [taskId, setTaskId] = useState<string | null>(null);
   const [status, setStatus] = useState<string>('idle');
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [elapsedTime, setElapsedTime] = useState<number>(0);
+
+  const providerConfig = provider === 'nvidia' ? PROVIDER_OPTIONS[1] : PROVIDER_OPTIONS[0];
 
   const isProcessing = status === 'submitting' || status === 'PENDING' || status === 'PROCESSING';
   const statusLabel = status === 'submitting' ? 'Submitting' : status;
@@ -90,7 +98,7 @@ function App() {
       const response = await fetch(`${API_BASE_URL}/render`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({ prompt, provider }),
       });
       if (!response.ok) throw new Error((await response.json()).detail || 'Failed to submit job');
       const data = await response.json();
@@ -135,12 +143,12 @@ function App() {
               </Typography>
               <div className="stat-row">
                 <div className="stat-card">
-                  <span className="stat-label">LLM</span>
-                  <span className="stat-value">{MODEL_NAME}</span>
+                  <span className="stat-label">Provider</span>
+                  <span className="stat-value">{providerConfig.label}</span>
                 </div>
                 <div className="stat-card">
-                  <span className="stat-label">Renderer</span>
-                  <span className="stat-value">Manim CE</span>
+                  <span className="stat-label">Model</span>
+                  <span className="stat-value">{providerConfig.model}</span>
                 </div>
                 <div className="stat-card">
                   <span className="stat-label">Backend</span>
@@ -154,10 +162,27 @@ function App() {
                 Describe your animation
               </Typography>
               <Typography className="panel-subtitle">
-                Keep it clear and visual. The model handles the rest.
+                Groq is the default. Switch providers only if you want to experiment.
               </Typography>
 
               <Box component="form" onSubmit={handleSubmit} className="panel-form">
+                <div className="provider-row">
+                  <span className="provider-label">Provider</span>
+                  <div className="provider-switch" role="group" aria-label="LLM provider">
+                    {PROVIDER_OPTIONS.map((option) => (
+                      <button
+                        key={option.id}
+                        type="button"
+                        className={`provider-button ${provider === option.id ? 'active' : ''}`}
+                        onClick={() => setProvider(option.id)}
+                        disabled={isProcessing}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                  <span className="provider-hint">{providerConfig.model}</span>
+                </div>
                 <TextField
                   fullWidth
                   multiline
@@ -243,7 +268,7 @@ function App() {
 
           <footer className="footer">
             <div>
-              Built as a side-project prototype • Model: {MODEL_NAME} • Provider: Groq •{' '}
+              Built as a side-project prototype • Model: {providerConfig.model} • Provider: {providerConfig.label} •{' '}
               <a href="https://github.com/Aneesh-382005/Playground" target="_blank" rel="noreferrer">
                 GitHub
               </a>

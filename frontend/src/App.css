@@ -162,6 +162,58 @@
   gap: 1.2rem;
 }
 
+.provider-row {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.provider-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.provider-switch {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.25rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.provider-button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.provider-button.active {
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+}
+
+.provider-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.provider-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.provider-hint {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
 .actions {
   display: flex;
   align-items: center;

@@ -9,3 +9,5 @@ services:
     envVars:
       - key: GROQ_API_KEY
         sync: false
+      - key: NVIDIA_API_KEY
+        sync: false

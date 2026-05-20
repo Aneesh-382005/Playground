@@ -1,10 +1,18 @@
+import json
 import os
 import re
 import time
+import urllib.error
+import urllib.request
 from groq import Groq
 from dotenv import load_dotenv
 from services.api.logic.sanitizer import sanitizeAndValidateCode, CodeValidationError
 load_dotenv()
+MODEL_NAMES = {
+    "groq": "qwen/qwen3-32b",
+    "nvidia": "google/gemma-2-2b-it",
+}
+NVIDIA_CHAT_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 MANIM_PROMPT_TEMPLATE = """
 You are a Manim Community Edition v0.18.0 expert whose only job is to produce
 safe, minimal, and runnable Manim Python code. Follow these rules exactly.
@@ -23,6 +31,12 @@ Code style and safety:
 - Keep the scene short and deterministic: total run time <= 10 seconds.
 - Use explicit sizes/positions; avoid randomization or external assets.
 - Keep the scene minimal: no more than 6 top-level mobjects created.
+- Use only supported Manim constructor arguments. For example, `Triangle()`
+    does not accept `side_length`; scale the object after creating it instead.
+- Keep object references in local variables; do not use scene lookup helpers
+    like `self.get_mobject(...)` or `Scene.get_mobject(...)`.
+- Do not access mobjects by numeric index or string lookup from the scene.
+  Store each mobject in a variable and reuse that variable directly.
 - Avoid using `self.play` inside deeply nested helper functions; calls to
     `self.play` should be inside `construct()` or clearly documented inline.
 - Do NOT pass bound methods to `self.play` (e.g., `mobj.set_color`);
@@ -58,19 +72,75 @@ def createGroqClient() -> Groq:
     return Groq(api_key=api_key)
 
 
-def generateManimCode(prompt: str, groqClient: Groq) -> str:
+def generateManimCode(prompt: str, groqClient: Groq | None = None, provider: str = "groq") -> str:
+    provider_key = provider.lower().strip()
+    model_name = MODEL_NAMES.get(provider_key)
+    if not model_name:
+        raise ValueError(f"Unsupported provider: {provider}")
+
+    if provider_key == "groq" and groqClient is None:
+        groqClient = createGroqClient()
+
     full_prompt = MANIM_PROMPT_TEMPLATE.format(user_prompt=prompt)
 
-    def call_groq(prompt_text: str):
-        return groqClient.chat.completions.create(
-            messages=[{"role": "user", "content": prompt_text}],
-            model="qwen/qwen3-32b",
+    def extract_message_content(response: object) -> tuple[bool, str]:
+        if isinstance(response, dict):
+            choices = response.get("choices") or []
+            if not choices:
+                return False, ""
+            message = choices[0].get("message") or {}
+            return True, message.get("content") or ""
+
+        choices = getattr(response, "choices", None) or []
+        if not choices:
+            return False, ""
+        return True, choices[0].message.content or ""
+
+    def call_model(prompt_text: str):
+        if provider_key == "groq":
+            if groqClient is None:
+                raise RuntimeError("Groq client is not available.")
+            return groqClient.chat.completions.create(
+                messages=[{"role": "user", "content": prompt_text}],
+                model=model_name,
+            )
+
+        api_key = os.getenv("NVIDIA_API_KEY")
+        if not api_key:
+            raise RuntimeError("NVIDIA_API_KEY is missing. Please set it in your environment.")
+
+        request = urllib.request.Request(
+            NVIDIA_CHAT_URL,
+            data=json.dumps(
+                {
+                    "model": model_name,
+                    "messages": [{"role": "user", "content": prompt_text}],
+                    "temperature": 0.01,
+                    "top_p": 0.1,
+                    "max_tokens": 4096,
+                    "stream": False,
+                }
+            ).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            method="POST",
         )
 
-    resp = call_groq(full_prompt)
-    if not resp.choices:
-        raise RuntimeError("No choices returned from Groq")
-    message = resp.choices[0].message.content or ""
+        try:
+            with urllib.request.urlopen(request, timeout=120) as response:
+                payload = json.load(response)
+        except urllib.error.HTTPError as exc:
+            error_body = exc.read().decode("utf-8", errors="replace")
+            raise RuntimeError(f"NVIDIA request failed: {exc.code} {error_body}") from exc
+
+        return payload
+
+    resp = call_model(full_prompt)
+    has_choices, message = extract_message_content(resp)
+    if not has_choices:
+        raise RuntimeError(f"No choices returned from {provider_key}")
 
     # Strip any LLM internal tags that sometimes appear
     cleaned = re.sub(r"<think>.*?</think>", "", message, flags=re.DOTALL | re.IGNORECASE).strip()
@@ -94,10 +164,10 @@ def generateManimCode(prompt: str, groqClient: Groq) -> str:
             + "\nPrevious response:\n" + cleaned
         )
 
-        resp2 = call_groq(retry_prompt)
-        if not resp2.choices:
-            raise RuntimeError("No choices returned from Groq on retry")
-        message2 = resp2.choices[0].message.content or ""
+        resp2 = call_model(retry_prompt)
+        has_choices2, message2 = extract_message_content(resp2)
+        if not has_choices2:
+            raise RuntimeError(f"No choices returned from {provider_key} on retry")
         cleaned2 = re.sub(r"<think>.*?</think>", "", message2, flags=re.DOTALL | re.IGNORECASE).strip()
 
         try:
@@ -130,3 +200,107 @@ def generateManimCode(prompt: str, groqClient: Groq) -> str:
                 "Failed to produce valid Manim code after retry. "
                 f"Debug files: {raw_path}, {err_path}"
             )
+
+
+def repairManimCode(
+    prompt: str,
+    previous_code: str,
+    render_error: str,
+    groqClient: Groq | None = None,
+    provider: str = "groq",
+) -> str:
+    provider_key = provider.lower().strip()
+    model_name = MODEL_NAMES.get(provider_key)
+    if not model_name:
+        raise ValueError(f"Unsupported provider: {provider}")
+
+    if provider_key == "groq" and groqClient is None:
+        groqClient = createGroqClient()
+
+    render_hints = []
+    lower_error = render_error.lower()
+    if "get_mobject" in lower_error:
+        render_hints.append(
+            "Do not call self.get_mobject or any scene lookup helper. Use the local mobject variables you create."
+        )
+    if "side_length" in lower_error and "triangle" in lower_error:
+        render_hints.append(
+            "Triangle does not accept side_length. Create Triangle() and then scale it if needed."
+        )
+    if "bound method" in lower_error or "set_color" in lower_error:
+        render_hints.append(
+            "Do not pass bound methods to self.play. Use .animate or ApplyMethod instead."
+        )
+
+    repair_prompt = (
+        MANIM_PROMPT_TEMPLATE.format(user_prompt=prompt)
+        + "\n\nThe previous code rendered with a Manim error."
+        + f"\nRender error: {render_error}\n"
+        + "Return a corrected full file that avoids the same issue."
+        + " Keep the scene minimal and use only supported Manim APIs."
+        + ("\nSpecific fixes to apply:\n- " + "\n- ".join(render_hints) if render_hints else "")
+        + "\nPrevious code:\n"
+        + previous_code
+    )
+
+    def extract_message_content(response: object) -> tuple[bool, str]:
+        if isinstance(response, dict):
+            choices = response.get("choices") or []
+            if not choices:
+                return False, ""
+            message = choices[0].get("message") or {}
+            return True, message.get("content") or ""
+
+        choices = getattr(response, "choices", None) or []
+        if not choices:
+            return False, ""
+        return True, choices[0].message.content or ""
+
+    def call_model(prompt_text: str):
+        if provider_key == "groq":
+            if groqClient is None:
+                raise RuntimeError("Groq client is not available.")
+            return groqClient.chat.completions.create(
+                messages=[{"role": "user", "content": prompt_text}],
+                model=model_name,
+            )
+
+        api_key = os.getenv("NVIDIA_API_KEY")
+        if not api_key:
+            raise RuntimeError("NVIDIA_API_KEY is missing. Please set it in your environment.")
+
+        request = urllib.request.Request(
+            NVIDIA_CHAT_URL,
+            data=json.dumps(
+                {
+                    "model": model_name,
+                    "messages": [{"role": "user", "content": prompt_text}],
+                    "temperature": 0.01,
+                    "top_p": 0.1,
+                    "max_tokens": 4096,
+                    "stream": False,
+                }
+            ).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            method="POST",
+        )
+
+        try:
+            with urllib.request.urlopen(request, timeout=120) as response:
+                payload = json.load(response)
+        except urllib.error.HTTPError as exc:
+            error_body = exc.read().decode("utf-8", errors="replace")
+            raise RuntimeError(f"NVIDIA request failed: {exc.code} {error_body}") from exc
+
+        return payload
+
+    resp = call_model(repair_prompt)
+    has_choices, message = extract_message_content(resp)
+    if not has_choices:
+        raise RuntimeError(f"No choices returned from {provider_key} during render fix")
+
+    cleaned = re.sub(r"<think>.*?</think>", "", message, flags=re.DOTALL | re.IGNORECASE).strip()
+    return sanitizeAndValidateCode(cleaned)
